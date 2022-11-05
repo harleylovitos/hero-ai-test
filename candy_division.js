@@ -8,4 +8,5 @@ const candy_division = (n) =>{
 return numOfFriends;
 }
 
+console.log(candy_division(30))
 console.log(candy_division(25))

@@ -11,6 +11,25 @@ const typeCheck = {
   isObject: (val) => {
     return typeof val === "object";
   },
+  processObject: (property,objVal) =>{
+    let subObject = {};
+    for (const subProp in objVal) {
+      const newObjVal = objVal[subProp];
+      if (typeCheck.isString(newObjVal))
+        subObject[subProp] = newObjVal + " AI";
+      else if (typeCheck.isInteger(newObjVal))
+        subObject[subProp] = newObjVal + 1;
+      else if (typeCheck.isArray(newObjVal)) {
+        const newSubObjVal = newObjVal.map((val2) => {
+          if (typeCheck.isString(val2)) return val2 + " AI";
+          else if (typeCheck.isInteger(val2)) return val2 + 1;
+        });
+        subObject[property] = newSubObjVal;
+      }
+      else subObject[subProp] = newObjVal;
+    }
+    return subObject;
+  }
 };
 
 const transformValue = (obj) => {
@@ -28,15 +47,7 @@ const transformValue = (obj) => {
       });
       newObject[property] = newObjVal;
     } else if (typeCheck.isObject(objVal)) {
-      let subObject = {};
-      for (const subProp in objVal) {
-        const newObjVal = objVal[subProp];
-        if (typeCheck.isString(newObjVal))
-          subObject[subProp] = newObjVal + " AI";
-        else if (typeCheck.isInteger(newObjVal))
-          subObject[subProp] = newObjVal + 1;
-        else subObject[subProp] = newObjVal;
-      }
+      const subObject = typeCheck.processObject(property,objVal);
       newObject[property] = subObject;
     }
   }
